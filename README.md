@@ -9,7 +9,7 @@ Show recently listed NFTs ✅
 
 ## Sell Page
 
-You can list your NFT on the marketplace
+You can list your NFT on the marketplace ✅
 
 ## Moralis: How do we tell it to listen our events?
 
