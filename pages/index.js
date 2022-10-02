@@ -1,26 +1,27 @@
 import { useMoralis, useMoralisQuery } from "react-moralis";
+import { useQuery } from "@apollo/client";
 import NftBox from "../components/NftBox";
+import networkMapping from "../constants/networkMapping";
+import { GET_ACTIVE_ITEMS } from "../constants/graphQueries";
 
 export default function Home() {
-  const { isWeb3Enabled } = useMoralis();
-  const { data: nftList, isFetching: fetchingNftList } = useMoralisQuery(
-    "ActiveItem",
-    (query) => query.limit(10).descending("tokenId")
-  );
+  const { isWeb3Enabled, chainId } = useMoralis();
+  const marketplaceAddress =
+    chainId && networkMapping[parseInt(chainId)]?.nftMarketplace[0];
+  const { loading, data } = useQuery(GET_ACTIVE_ITEMS);
 
   return (
     <div className="container mx-auto">
       <h1 className="p-4 font-bold text-2xl">Recently Listed NFTs</h1>
       <div className="flex flex-wrap">
         {isWeb3Enabled ? (
-          fetchingNftList ? (
+          loading || !data ? (
             <div>Loading...</div>
           ) : (
-            nftList.map(({ id, attributes }) => {
-              console.log(attributes);
+            data.activeItems.map((nft) => {
               return (
-                <div key={id}>
-                  <NftBox {...attributes} />
+                <div key={nft.id}>
+                  <NftBox {...nft} marketplaceAddress={marketplaceAddress} />
                 </div>
               );
             })
